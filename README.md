@@ -44,7 +44,7 @@ To wystarczy: dane zapisują się w przeglądarce (localStorage). W zakładce **
 Żeby mieć te same dane na kilku urządzeniach:
 
 1. W projekcie na Vercelu: **Storage → Marketplace → Upstash (Redis) → Create / Connect**.
-   Integracja sama doda zmienne `KV_REST_API_URL` i `KV_REST_API_TOKEN`.
+   Integracja sama doda zmienne `<PREFIKS>_REST_API_URL` i `<PREFIKS>_REST_API_TOKEN` (prefiks może być dowolny, np. `KV` lub domyślny `STORAGE`).
 2. **Settings → Environment Variables** → dodaj `SYNC_SECRET` z dowolnym długim hasłem.
 3. Zrób **Redeploy**.
 4. W aplikacji: **Zasady → Synchronizacja** → wpisz to samo hasło na każdym urządzeniu.

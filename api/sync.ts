@@ -1,17 +1,32 @@
 // Vercel Function: przechowuje dziennik treningowy w Upstash Redis (Vercel Marketplace → Upstash for Redis).
 // Wymagane zmienne środowiskowe:
 //   SYNC_SECRET                                 – dowolne hasło, wpisywane w aplikacji (Więcej → Synchronizacja)
-//   KV_REST_API_URL + KV_REST_API_TOKEN         – ustawiane automatycznie przez integrację Upstash
-//   (alternatywnie UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN)
+//   <PREFIX>_REST_API_URL + <PREFIX>_REST_API_TOKEN – ustawiane automatycznie przez integrację Upstash
+//   (dowolny prefiks, np. KV lub STORAGE; alternatywnie UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN)
 
 const DATA_KEY = 'wodyn-picp:data'
 const MAX_BYTES = 1_000_000
 
+/** Szuka danych dostępowych Upstash niezależnie od prefiksu nadanego przy podłączaniu bazy (KV_, STORAGE_, …). */
+function upstash(): { url: string; token: string } | null {
+  const e = process.env
+  if (e.UPSTASH_REDIS_REST_URL && e.UPSTASH_REDIS_REST_TOKEN) return { url: e.UPSTASH_REDIS_REST_URL, token: e.UPSTASH_REDIS_REST_TOKEN }
+  const prefixes = Object.keys(e)
+    .filter((k) => k.endsWith('_REST_API_URL'))
+    .map((k) => k.slice(0, -'_REST_API_URL'.length))
+    .sort((a, b) => (a === 'KV' ? -1 : b === 'KV' ? 1 : 0))
+  for (const p of prefixes) {
+    const url = e[`${p}_REST_API_URL`]
+    const token = e[`${p}_REST_API_TOKEN`]
+    if (url && token) return { url, token }
+  }
+  return null
+}
+
 function env() {
-  const url = process.env.KV_REST_API_URL ?? process.env.UPSTASH_REDIS_REST_URL
-  const token = process.env.KV_REST_API_TOKEN ?? process.env.UPSTASH_REDIS_REST_TOKEN
+  const db = upstash()
   const secret = process.env.SYNC_SECRET
-  return url && token && secret ? { url: url.replace(/\/$/, ''), token, secret } : null
+  return db && secret ? { url: db.url.replace(/\/$/, ''), token: db.token, secret } : null
 }
 
 function safeEqual(a: string, b: string) {
