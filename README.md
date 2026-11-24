@@ -1,7 +1,7 @@
 # Wodyn × PICP – dziennik treningowy (8 tygodni)
 
 Aplikacja webowa zbudowana na bazie arkusza *Plan Wodyn PICP – dziennik 8 tygodni*.
-Plan PON A / WT C / CZW B, 55 serii tygodniowo (18 + 19 + 18), zapis kg / powtórzeń / RIR seria po serii, postępy tydzień do tygodnia.
+Plan PON A / WT C / CZW B, 56 serii tygodniowo (18 + 19 + 19), zapis kg / powtórzeń / RIR seria po serii, postępy tydzień do tygodnia.
 
 ## Program
 
@@ -9,12 +9,12 @@ Plan PON A / WT C / CZW B, 55 serii tygodniowo (18 + 19 + 18), zapis kg / powtó
 |---|---|---|---:|
 | Poniedziałek | **A** – przysiad · czworogłowe · barki | A przysiad · B1/B2 leg press + prostowanie nóg · C ściąganie drążka · D1/D2 unoszenie bokiem + reverse pec deck · E wspięcia na palce stojąc · F ab wheel | 18 |
 | Wtorek | **C** – wyciskanie · góra ciała | A1/A2 wyciskanie leżąc + wiosłowanie z podparciem klatki · B1/B2 hantle skos + maszyna · C uginanie nóg siedząc · D triceps na wyciągu · E uginanie hantli na ławce skośnej | 19 |
-| Czwartek | **B** – martwy ciąg · grzbiet | A martwy ciąg · B1/B2/B3 podciąganie neutralne + prostowanie ramion na wyciągu + wiosłowanie na wyciągu dolnym · C pec deck · D1/D2 przywodziciele + odwodziciele · E uginanie młotkowe | 18 |
-| | | **Razem** | **55** |
+| Czwartek | **B** – martwy ciąg · grzbiet | A martwy ciąg (4 serie) · B1/B2/B3 podciąganie neutralne + prostowanie ramion na wyciągu + wiosłowanie na wyciągu dolnym · C pec deck · D1/D2 przywodziciele + odwodziciele · E uginanie młotkowe | 19 |
+| | | **Razem** | **56** |
 
 Tydzień 1 to kalibracja (+1 RIR do celu), tydzień 4 kontrola zmęczenia, tydzień 8 ocena. Szczegóły (serie, powtórzenia, RIR, tempo, przerwy) są w zakładce **Plan** i w `src/plan.ts`.
 
-Zmiany względem pierwotnego arkusza: we wtorek blok E to uginanie hantli na ławce skośnej zamiast wspięć na palce siedząc, a w czwartek zmieniono dobór ćwiczeń w blokach B3–E (blok D jest teraz dwuserią).
+Zmiany względem pierwotnego arkusza: we wtorek blok E to uginanie hantli na ławce skośnej zamiast wspięć na palce siedząc, a w czwartek martwy ciąg ma 4 serie zamiast 3 i zmieniono dobór ćwiczeń w blokach B3–E (blok D jest teraz dwuserią).
 
 ## Co jest w środku
 
