@@ -87,6 +87,10 @@ export function MoreView() {
             <dd>2 s w dół, 1 s w górę, 1 s napięcia na górze</dd>
           </div>
           <div>
+            <dt>3010</dt>
+            <dd>3 s w dół, bez pauzy, 1 s w górę</dd>
+          </div>
+          <div>
             <dt>reset</dt>
             <dd>ustaw pozycję przed każdym powtórzeniem</dd>
           </div>
