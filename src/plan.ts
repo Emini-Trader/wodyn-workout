@@ -181,10 +181,10 @@ export const DAYS: Day[] = [
       },
       {
         letter: 'E',
-        title: 'Łydki',
+        title: 'Biceps',
         mode: 'SOLO',
-        exercises: [ex('wt', 'E', 'Wspięcia na palce siedząc', 2, [12, 20], [1, 2], '2011')],
-        rest: r(60, 90, '60–90 s'),
+        exercises: [ex('wt', 'E', 'Uginanie hantli na ławce skośnej', 2, [8, 12], [1, 2], '3010')],
+        rest: r(90, 90, '90 s'),
       },
     ],
   },
