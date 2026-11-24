@@ -3,6 +3,9 @@ import { DAYS, MODE_INFO, SETS_PER_WEEK, fmtRange, rirTarget, setsInDay, type Da
 import { sessionStats } from '../logic'
 import { useData } from '../store'
 
+// „2–4 serie” (poza 12–14), w pozostałych przypadkach „serii”
+const seriesWord = (n: number) => (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 'serie' : 'serii')
+
 export function PlanView({ onOpen }: { onOpen: (week: number, day: DayId) => void }) {
   const [calib, setCalib] = useState(false)
   const week = calib ? 1 : 2
@@ -12,7 +15,7 @@ export function PlanView({ onOpen }: { onOpen: (week: number, day: DayId) => voi
       <header className="page-head">
         <h1>Plan tygodnia</h1>
         <p className="muted">
-          3 treningi · {SETS_PER_WEEK} serie tygodniowo · 8 tygodni. Kolejność: PON A → WT C → CZW B.
+          3 treningi · {SETS_PER_WEEK} {seriesWord(SETS_PER_WEEK)} tygodniowo · 8 tygodni. Kolejność: PON A → WT C → CZW B.
         </p>
         <div className="seg" role="radiogroup" aria-label="Cele RIR">
           <button role="radio" aria-checked={!calib} className={!calib ? 'active' : ''} onClick={() => setCalib(false)}>

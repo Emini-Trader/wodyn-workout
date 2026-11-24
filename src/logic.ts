@@ -1,5 +1,6 @@
 import {
   DAYS,
+  RETIRED,
   WEEKS,
   dayById,
   rirTarget,
@@ -23,9 +24,13 @@ export function sessionStats(data: AppData, week: number, day: DayId) {
   const d = dayById(day)
   const total = setsInDay(d)
   const sess = getSession(data, week, day)
+  // liczymy tylko serie ćwiczeń z bieżącego planu – zapisy ćwiczeń usuniętych z planu (RETIRED) zostają w danych,
+  // ale nie zawyżają realizacji
   let done = 0
-  if (sess) for (const v of Object.values(sess.sets)) if (isLogged(v)) done++
-  return { done: Math.min(done, total), total, date: sess?.date }
+  if (sess)
+    for (const b of d.blocks)
+      for (const e of b.exercises) for (let i = 0; i < e.sets; i++) if (isLogged(sess.sets[setKey(e.id, i)])) done++
+  return { done, total, date: sess?.date }
 }
 
 export function weekStats(data: AppData, week: number) {
@@ -147,26 +152,30 @@ export function toCSV(data: AppData): string {
     for (const d of DAYS) {
       const sess = getSession(data, w, d.id)
       if (!sess) continue
-      for (const b of d.blocks)
-        for (const e of b.exercises)
-          for (let i = 0; i < e.sets; i++) {
-            const s = sess.sets[setKey(e.id, i)]
-            if (!isLogged(s)) continue
-            rows.push([
-              String(w),
-              d.weekday,
-              sess.date ?? '',
-              b.letter,
-              e.code,
-              e.name,
-              String(i + 1),
-              s.kg == null ? '' : String(s.kg),
-              String(s.reps),
-              s.rir == null ? '' : String(s.rir),
-              String(e1rm(s) ?? ''),
-              sess.notes ?? '',
-            ])
-          }
+      // bieżący plan + archiwalne ćwiczenia (usunięte z planu), żeby eksport zawierał pełną historię
+      const entries = [
+        ...d.blocks.flatMap((b) => b.exercises.map((e) => ({ block: b.letter, e, retired: false }))),
+        ...RETIRED.filter((e) => e.day === d.id).map((e) => ({ block: e.code[0], e, retired: true })),
+      ]
+      for (const { block, e, retired } of entries)
+        for (let i = 0; i < e.sets; i++) {
+          const s = sess.sets[setKey(e.id, i)]
+          if (!isLogged(s)) continue
+          rows.push([
+            String(w),
+            d.weekday,
+            sess.date ?? '',
+            block,
+            e.code,
+            retired ? `${e.name} (archiwalne)` : e.name,
+            String(i + 1),
+            s.kg == null ? '' : String(s.kg),
+            String(s.reps),
+            s.rir == null ? '' : String(s.rir),
+            String(e1rm(s) ?? ''),
+            sess.notes ?? '',
+          ])
+        }
     }
   return rows.map((r) => r.map((c) => (/[;"\n]/.test(c) ? `"${c.replace(/"/g, '""')}"` : c)).join(';')).join('\n')
 }

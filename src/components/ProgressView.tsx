@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { DAYS, MAIN_LIFTS, SETS_PER_WEEK, WEEKS, allExercises, dayById, type DayId } from '../plan'
+import { DAYS, MAIN_LIFTS, RETIRED, SETS_PER_WEEK, WEEKS, allExercises, dayById, type DayId } from '../plan'
 import { useData } from '../store'
-import { bestOfWeek, fmtDate, fmtNum, sessionStats, weekStats } from '../logic'
+import { bestOfWeek, fmtDate, fmtNum, isLogged, sessionStats, weekStats } from '../logic'
 import { LineChart } from './LineChart'
 import { HistoryTable } from './History'
 
@@ -11,7 +11,15 @@ export function ProgressView({ onOpen }: { onOpen: (week: number, day: DayId) =>
   const data = useData()
   const exercises = allExercises()
   const [exId, setExId] = useState(exercises[0].id)
-  const selected = exercises.find((e) => e.id === exId)!
+  // archiwalne ćwiczenia pokazujemy tylko, jeśli mają jakiekolwiek zapisane serie
+  const retired = RETIRED.filter((e) =>
+    weeks.some((w) => Array.from({ length: e.sets }, (_, i) => data.weeks[w]?.[e.day]?.sets[`${e.id}#${i}`]).some(isLogged)),
+  )
+  const selected =
+    exercises.find((e) => e.id === exId) ?? (() => {
+      const r = retired.find((e) => e.id === exId) ?? RETIRED[0]
+      return { ...r, day: dayById(r.day) }
+    })()
 
   let done = 0
   let sessions = 0
@@ -134,6 +142,15 @@ export function ProgressView({ onOpen }: { onOpen: (week: number, day: DayId) =>
                 ))}
             </optgroup>
           ))}
+          {retired.length > 0 && (
+            <optgroup label="Archiwum – ćwiczenia usunięte z planu">
+              {retired.map((e) => (
+                <option key={e.id} value={e.id}>
+                  {dayById(e.day).short} · {e.name}
+                </option>
+              ))}
+            </optgroup>
+          )}
         </select>
         <HistoryTable exercise={selected} day={selected.day.id} />
       </section>

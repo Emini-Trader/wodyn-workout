@@ -1,4 +1,6 @@
-// Plan treningowy przeniesiony 1:1 z arkusza „Plan Wodyn PICP – dziennik 8 tygodni”.
+// Plan treningowy na bazie arkusza „Plan Wodyn PICP – dziennik 8 tygodni”.
+// Zmiany względem arkusza: wtorek E (uginanie hantli na ławce skośnej zamiast łydek),
+// czwartek B3–E (nowy dobór ćwiczeń, blok D jako dwuseria) – łącznie 55 serii tygodniowo.
 // Wartości RIR to cele bazowe (tydzień 2–8). W tygodniu 1 (kalibracja) do celu dodajemy +1 RIR.
 
 export type Mode = 'SOLO' | 'DWUSERIA' | 'TRÓJSERIA' | 'ANTAGONIŚCI'
@@ -209,9 +211,11 @@ export const DAYS: Day[] = [
         title: 'Grzbiet – składanka Wodyna',
         mode: 'TRÓJSERIA',
         exercises: [
-          ex('czw', 'B1', 'Podciąganie lub wyciąg górny', 2, [6, 10], [2, 2], '2010'),
+          // ten sam slot co wcześniejsze „Podciąganie lub wyciąg górny” – historia zostaje
+          ex('czw', 'B1', 'Podciąganie chwytem neutralnym', 2, [6, 10], [2, 2], '2010', { bodyweight: true }),
           ex('czw', 'B2', 'Prostowanie ramion na wyciągu', 2, [10, 12], [1, 2], '2010'),
-          ex('czw', 'B3', 'Wiosłowanie z podparciem klatki', 2, [8, 12], [1, 2], '2010'),
+          // nowe ćwiczenie → nowy identyfikator (stare czw-B3 to wiosłowanie z podparciem klatki)
+          ex('czw', 'B3', 'Wiosłowanie siedząc na wyciągu dolnym', 2, [8, 12], [1, 2], '2010', { id: 'czw-B3-wyciag' }),
         ],
         between: r(10, 15, '10–15 s'),
         rest: r(120, 180, '2–3 min'),
@@ -219,32 +223,48 @@ export const DAYS: Day[] = [
       },
       {
         letter: 'C',
-        title: 'Klatka – druga ekspozycja po wtorku',
+        title: 'Klatka – izolacja',
         mode: 'SOLO',
-        exercises: [ex('czw', 'C', 'Wyciskanie hantli na skosie dodatnim', 3, [8, 10], [2, 2], '2010')],
-        rest: r(120, 120, '2 min'),
+        exercises: [ex('czw', 'C', 'Pec Deck / rozpiętki na maszynie', 3, [10, 12], [1, 2], '3010', { id: 'czw-C-pecdeck' })],
+        rest: r(90, 120, '90–120 s'),
         transition: r(120, 120, '2 min'),
       },
       {
         letter: 'D',
-        title: 'Mięśnie kulszowo-goleniowe',
-        mode: 'SOLO',
-        exercises: [ex('czw', 'D', 'Uginanie nóg siedząc', 3, [8, 12], [1, 2], '2010')],
+        title: 'Przywodziciele i odwodziciele biodra',
+        mode: 'DWUSERIA',
+        exercises: [
+          ex('czw', 'D1', 'Przywodziciele siedząc na maszynie', 2, [12, 15], [1, 2], '2010'),
+          ex('czw', 'D2', 'Odwodziciele siedząc na maszynie', 2, [12, 15], [1, 2], '2010'),
+        ],
+        between: r(10, 15, '10–15 s'),
         rest: r(90, 120, '90–120 s'),
         transition: r(90, 90, '90 s'),
       },
       {
         letter: 'E',
-        title: 'Biceps',
+        title: 'Biceps i mięsień ramienny',
         mode: 'SOLO',
-        exercises: [ex('czw', 'E', 'Uginanie ramion na biceps', 2, [8, 12], [1, 2], '2010')],
-        rest: r(60, 90, '60–90 s'),
+        exercises: [ex('czw', 'E', 'Uginanie młotkowe hantlami', 2, [8, 12], [1, 2], '3010', { id: 'czw-E-mlotkowe' })],
+        rest: r(90, 90, '90 s'),
       },
     ],
   },
 ]
 
 export const WEEKS = 8
+
+/**
+ * Ćwiczenia usunięte z planu. Ich zapisane wyniki zostają w danych (nie są kasowane ani przypisywane
+ * nowym ćwiczeniom) – są widoczne w historii na ekranie Postępy i w eksporcie CSV,
+ * ale nie liczą się do realizacji bieżącego planu ani do podpowiedzi progresji.
+ */
+export const RETIRED: (Exercise & { day: DayId })[] = [
+  { ...ex('czw', 'B3', 'Wiosłowanie z podparciem klatki', 2, [8, 12], [1, 2], '2010'), day: 'czw' },
+  { ...ex('czw', 'C', 'Wyciskanie hantli na skosie dodatnim', 3, [8, 10], [2, 2], '2010'), day: 'czw' },
+  { ...ex('czw', 'D', 'Uginanie nóg siedząc', 3, [8, 12], [1, 2], '2010'), day: 'czw' },
+  { ...ex('czw', 'E', 'Uginanie ramion na biceps', 2, [8, 12], [1, 2], '2010'), day: 'czw' },
+]
 
 export interface WeekInfo {
   n: number
@@ -294,7 +314,7 @@ export const allExercises = (): (Exercise & { day: Day; block: Block })[] =>
 
 export const setsInDay = (day: Day) => day.blocks.reduce((s, b) => s + b.exercises.reduce((a, e) => a + e.sets, 0), 0)
 
-export const SETS_PER_WEEK = DAYS.reduce((s, d) => s + setsInDay(d), 0) // 54
+export const SETS_PER_WEEK = DAYS.reduce((s, d) => s + setsInDay(d), 0)
 
 export const rirTarget = (e: Exercise, week: number): [number, number] => {
   const bonus = WEEK_INFO[week - 1]?.rirBonus ?? 0

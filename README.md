@@ -1,7 +1,20 @@
 # Wodyn × PICP – dziennik treningowy (8 tygodni)
 
 Aplikacja webowa zbudowana na bazie arkusza *Plan Wodyn PICP – dziennik 8 tygodni*.
-Plan PON A / WT C / CZW B, 54 serie tygodniowo, zapis kg / powtórzeń / RIR seria po serii, postępy tydzień do tygodnia.
+Plan PON A / WT C / CZW B, 55 serii tygodniowo (18 + 19 + 18), zapis kg / powtórzeń / RIR seria po serii, postępy tydzień do tygodnia.
+
+## Program
+
+| Dzień | Trening | Bloki | Serie |
+|---|---|---|---:|
+| Poniedziałek | **A** – przysiad · czworogłowe · barki | A przysiad · B1/B2 leg press + prostowanie nóg · C ściąganie drążka · D1/D2 unoszenie bokiem + reverse pec deck · E wspięcia na palce stojąc · F ab wheel | 18 |
+| Wtorek | **C** – wyciskanie · góra ciała | A1/A2 wyciskanie leżąc + wiosłowanie z podparciem klatki · B1/B2 hantle skos + maszyna · C uginanie nóg siedząc · D triceps na wyciągu · E uginanie hantli na ławce skośnej | 19 |
+| Czwartek | **B** – martwy ciąg · grzbiet | A martwy ciąg · B1/B2/B3 podciąganie neutralne + prostowanie ramion na wyciągu + wiosłowanie na wyciągu dolnym · C pec deck · D1/D2 przywodziciele + odwodziciele · E uginanie młotkowe | 18 |
+| | | **Razem** | **55** |
+
+Tydzień 1 to kalibracja (+1 RIR do celu), tydzień 4 kontrola zmęczenia, tydzień 8 ocena. Szczegóły (serie, powtórzenia, RIR, tempo, przerwy) są w zakładce **Plan** i w `src/plan.ts`.
+
+Zmiany względem pierwotnego arkusza: we wtorek blok E to uginanie hantli na ławce skośnej zamiast wspięć na palce siedząc, a w czwartek zmieniono dobór ćwiczeń w blokach B3–E (blok D jest teraz dwuserią).
 
 ## Co jest w środku
 
@@ -63,6 +76,9 @@ src/components/      – widoki
 api/sync.ts          – Vercel Function (Upstash Redis)
 ```
 
-Zmiana planu (np. inne ćwiczenie) = edycja `src/plan.ts`. Wyniki są przypięte do identyfikatora slotu (np. `pon-B1`), więc zmiana nazwy ćwiczenia nie kasuje historii.
+Zmiana planu (np. inne ćwiczenie) = edycja `src/plan.ts`. Wyniki są przypięte do identyfikatora ćwiczenia (np. `pon-B1`):
+
+- **ten sam identyfikator** – zmiana nazwy lub zakresów zachowuje historię pod nową nazwą (tak zrobiono z wtorkowym `wt-E`),
+- **nowy identyfikator** (`id` w definicji ćwiczenia) – gdy ćwiczenie jest naprawdę inne, żeby stare wyniki nie mieszały się z nowymi. Stare ćwiczenie dopisuje się do listy `RETIRED`: jego wyniki zostają w danych i w synchronizacji, są widoczne w **Postępy → Historia ćwiczenia → Archiwum** i w eksporcie CSV, ale nie liczą się do realizacji planu ani podpowiedzi progresji.
 
 e1RM = ciężar × (1 + (powtórzenia + RIR) / 30) – orientacyjny trend, nie test 1RM (jak w arkuszu).
