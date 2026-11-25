@@ -1,6 +1,6 @@
 // Plan treningowy na bazie arkusza „Plan Wodyn PICP – dziennik 8 tygodni”.
-// Zmiany względem arkusza: wtorek E (uginanie hantli na ławce skośnej zamiast łydek),
-// czwartek: martwy ciąg 4 serie, B3–E nowy dobór ćwiczeń (blok D jako dwuseria) – łącznie 56 serii tygodniowo.
+// Zmiany względem arkusza: poniedziałek E (łydki 3 serie zamiast 2), wtorek E (uginanie hantli na ławce skośnej zamiast łydek),
+// czwartek: martwy ciąg 4 serie, B3–E nowy dobór ćwiczeń (blok D jako dwuseria) – łącznie 57 serii tygodniowo.
 // Wartości RIR to cele bazowe (tydzień 2–8). W tygodniu 1 (kalibracja) do celu dodajemy +1 RIR.
 
 export type Mode = 'SOLO' | 'DWUSERIA' | 'TRÓJSERIA' | 'ANTAGONIŚCI'
@@ -118,7 +118,7 @@ export const DAYS: Day[] = [
         letter: 'E',
         title: 'Łydki',
         mode: 'SOLO',
-        exercises: [ex('pon', 'E', 'Wspięcia na palce stojąc', 2, [12, 15], [1, 2], '2011')],
+        exercises: [ex('pon', 'E', 'Wspięcia na palce stojąc', 3, [12, 15], [1, 2], '2011')],
         rest: r(60, 90, '60–90 s'),
         transition: r(60, 90, '60–90 s'),
       },
